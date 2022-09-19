@@ -50,6 +50,7 @@ class _firstpageState extends State<firstpage>
             title: Text("Login"),
             centerTitle: true,
             bottom: TabBar(
+
               controller: tabController,
               tabs: [
                 Tab(
@@ -80,6 +81,7 @@ class _firstpageState extends State<firstpage>
             ),
           ),
           body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
             controller: tabController,
             children: [
                firstlogin(tabController),

@@ -40,7 +40,6 @@ class _UserpageState extends State<Userpage> {
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
             await GoogleSignIn().signOut();
-            print("Logut");
             widget.tabController.animateTo(0);
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.clear();
@@ -50,15 +49,38 @@ class _UserpageState extends State<Userpage> {
   }
 
   Widget buildUser(UserModel userModal) => InkWell(
-        onLongPress: () {
-          final docuser =
-              FirebaseFirestore.instance.collection('user').doc(userModal.uId);
-          docuser.delete();
-        },
         child: ListTile(
           title: Text(userModal.name!),
           subtitle: Text(userModal.email!),
           leading: Image.network("${userModal.userImg}"),
+          trailing: InkWell(
+            onTap: () {
+              showModalBottomSheet<void>(
+                  isDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                        child: new Wrap(children: <Widget>[
+                      new ListTile(
+                          leading: new Icon(Icons.delete),
+                          title: new Text('Delete'),
+                          onTap: () {
+                            final docuser = FirebaseFirestore.instance
+                                .collection('user')
+                                .doc(userModal.uId);
+                            docuser.delete();
+                          }
+                          // Remove the tapped document here - how?
+
+                          ),
+                    ]));
+                  });
+            },
+            child: Icon(
+              Icons.delete,
+              color: Colors.red,
+            ),
+          ),
         ),
       );
 

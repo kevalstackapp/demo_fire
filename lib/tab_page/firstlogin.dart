@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_fire/Home_start/resetpasword.dart';
+import 'package:demo_fire/Home_start/userLogin.dart';
 import 'package:demo_fire/service/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +18,8 @@ class firstlogin extends StatefulWidget {
 }
 
 class _firstloginState extends State<firstlogin> {
-  TextEditingController User_name = TextEditingController();
-  TextEditingController phone = TextEditingController();
+
+  TextEditingController password = TextEditingController();
   TextEditingController email = TextEditingController();
 
   @override
@@ -43,7 +45,7 @@ class _firstloginState extends State<firstlogin> {
             Padding(
               padding: EdgeInsets.all(10),
               child: TextField(
-                controller: phone,
+                controller: password,
                 //obscureText: true,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -52,13 +54,64 @@ class _firstloginState extends State<firstlogin> {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return resetPasword();
+                },));
+
+              },
               child: Text(
-                'Forgot Password.',
+                'Forget Password.',
                 style: TextStyle(fontSize: 15),
               ),
             ),
-            ElevatedButton(onPressed: () {}, child: Text("Sumbit")),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  final credential = await FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: email.text, password: password.text).then((value) {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return userLogin();
+                      },
+                    ));
+                  });
+
+                  print(credential);
+                } on FirebaseAuthException catch (e) {
+                  if (e.code == 'user-not-found') {
+                    print('No user found for that email.');
+                  } else if (e.code == 'wrong-password') {
+                    print('Wrong password provided for that user.');
+                  }
+                }
+              },
+              child: Text(
+                "Login",
+                style: TextStyle(fontSize: 15),
+              ),
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  try {
+                    final credential = await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                      email: email.text,
+                      password: password.text,
+                    );
+                    print(credential);
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'weak-password') {
+                      print('The password provided is too weak.');
+                    } else if (e.code == 'email-already-in-use') {
+                      print('The account already exists for that email.');
+                    }
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+                child: Text("Sumbit")),
             ElevatedButton(
                 onPressed: () async {
                   UserCredential? logn = await signInWithGoogle();
