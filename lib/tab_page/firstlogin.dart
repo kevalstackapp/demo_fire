@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class firstlogin extends StatefulWidget {
   TabController tabController;
@@ -27,16 +28,6 @@ class _firstloginState extends State<firstlogin> {
           children: [
             SizedBox(
               height: 20,
-            ),
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: TextField(
-                controller: User_name,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'User Name',
-                    hintText: 'Enter valid mail id as abc@gmail.com'),
-              ),
             ),
             Padding(
               padding: EdgeInsets.all(10),
@@ -80,6 +71,9 @@ class _firstloginState extends State<firstlogin> {
                         userImg: logn.user!.photoURL);
                     createUse(userModel);
                     widget.tabController.animateTo(1);
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.setString("login", "Yes");
                   }
                 },
                 child: Text("Google to Login.."))
@@ -106,8 +100,6 @@ class _firstloginState extends State<firstlogin> {
 
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
-
-
 
   Future createUse(UserModel userModel) async {
     final firestore =

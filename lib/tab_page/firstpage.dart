@@ -2,6 +2,7 @@ import 'package:demo_fire/Home_start/home_firstpage.dart';
 import 'package:demo_fire/tab_page/firstlogin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class firstpage extends StatefulWidget {
   const firstpage({Key? key}) : super(key: key);
@@ -12,17 +13,29 @@ class firstpage extends StatefulWidget {
 
 class _firstpageState extends State<firstpage>
     with SingleTickerProviderStateMixin {
-
-
   late TabController tabController;
 
-
+  var islogin;
 
   @override
   void initState() {
     super.initState();
+    shred();
     tabController = new TabController(vsync: this, length: 2);
   }
+
+  Future shred() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(prefs.containsKey("login")){
+      tabController.animateTo(1);
+    }
+    else{
+      tabController.animateTo(0);
+    }
+
+  }
+
 
 
   @override
@@ -67,9 +80,12 @@ class _firstpageState extends State<firstpage>
             ),
           ),
           body: TabBarView(
-            controller:tabController ,
-            children: [firstlogin(tabController),
-             home_firstpage(tabController)],
+            controller: tabController,
+            children: [
+               firstlogin(tabController),
+              Userpage(tabController)
+
+            ],
           ),
         ));
   }

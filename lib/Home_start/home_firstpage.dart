@@ -1,59 +1,71 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:demo_fire/service/user_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class home_firstpage extends StatefulWidget {
+import '../service/user_model.dart';
+
+class Userpage extends StatefulWidget {
   TabController tabController;
 
-  home_firstpage(this.tabController);
+  Userpage(this.tabController);
 
   @override
-  State<home_firstpage> createState() => _home_firstpageState();
+  State<Userpage> createState() => _UserpageState();
 }
 
-class _home_firstpageState extends State<home_firstpage> {
+class _UserpageState extends State<Userpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<List<UserModel>>(
-          stream: usersStream(),
-          builder: (BuildContext context, snapshot) {
-            if (snapshot.hasError) {
-              return Text('Something went wrong');
-            } else if (snapshot.hasData) {
-              final user = snapshot.data;
-              return ListView(children: user!.map(userBulid).toList());
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          }),
-      floatingActionButton: InkWell(
-        onTap: () async {
-          await GoogleSignIn().signOut().then((value) {
-            widget.tabController.animateTo(0);
-          });
+        stream: readUser(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Somthing is wrong');
+          } else if (snapshot.hasData) {
+            final user = snapshot.data!;
+
+            return ListView(
+              children: user.map(buildUser).toList(),
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
         },
-        child: Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: Icon(Icons.logout),
-        ),
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            await GoogleSignIn().signOut();
+            print("Logut");
+            widget.tabController.animateTo(0);
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.clear();
+          },
+          child: Icon(Icons.logout)),
     );
   }
 
-  Stream<List<UserModel>> usersStream() =>
-      FirebaseFirestore.instance.collection('user').snapshots().map((event) =>
-          event.docs.map((e) => UserModel.fromJson(e.data())).toList());
-
-  Widget userBulid(UserModel userModel) => ListTile(
-        title: Text(userModel.name!),
-        subtitle: Text(userModel.email!),
-        leading: Image.network(userModel.userImg!),
+  Widget buildUser(UserModel userModal) => InkWell(
+        onLongPress: () {
+          final docuser =
+              FirebaseFirestore.instance.collection('user').doc(userModal.uId);
+          docuser.delete();
+        },
+        child: ListTile(
+          title: Text(userModal.name!),
+          subtitle: Text(userModal.email!),
+          leading: Image.network("${userModal.userImg}"),
+        ),
       );
+
+  Stream<List<UserModel>> readUser() =>
+      FirebaseFirestore.instance.collection('user').snapshots().map(
+            (snapshot) => snapshot.docs
+                .map((doc) => UserModel.fromJson(doc.data()))
+                .toList(),
+          );
 }
