@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../service/user_model.dart';
+import '../model/user_model.dart';
+
 
 class Userpage extends StatefulWidget {
   TabController tabController;
@@ -49,40 +50,39 @@ class _UserpageState extends State<Userpage> {
   }
 
   Widget buildUser(UserModel userModal) => ListTile(
-        // title: Text(userModal.name!),
-        title: Text(userModal.email!),
-        leading: userModal.userImg != null
-            ? Image.network("${userModal.userImg}")
-            : Icon(
-                Icons.manage_accounts_outlined,
-                size: 50,
-              ),
-        trailing: InkWell(
-          onTap: () {
-            showModalBottomSheet<void>(
-                isDismissible: false,
-                context: context,
-                builder: (BuildContext context) {
-                  return Container(
-                      child: new Wrap(children: <Widget>[
-                    new ListTile(
-                        leading: new Icon(Icons.delete),
-                        title: new Text('Delete'),
-                        onTap: () {
-                          final docuser = FirebaseFirestore.instance
-                              .collection('user')
-                              .doc(userModal.uId);
-                          docuser.delete();
-                        }),
-                  ]));
-                });
+      // title: Text(userModal.name!),
+      title: Text(userModal.email!),
+      leading: userModal.userImg != null
+          ? Image.network("${userModal.userImg}")
+          : Icon(
+              Icons.manage_accounts_outlined,
+              size: 50,
+            ),
+      trailing: IconButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(title: Text("Delet Your Acount"), actions: [
+                  TextButton(
+                      onPressed: () {
+                        final docuser = FirebaseFirestore.instance
+                            .collection('user')
+                            .doc(userModal.uId);
+                        docuser.delete();
+                        Navigator.pop(context);
+                      },
+                      child: Text("Yes")),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("No")),
+                ]);
+              },
+            );
           },
-          child: Icon(
-            Icons.delete,
-            color: Colors.red,
-          ),
-        ),
-      );
+          icon: Icon(Icons.delete)));
 
   Stream<List<UserModel>> readUser() =>
       FirebaseFirestore.instance.collection('user').snapshots().map(

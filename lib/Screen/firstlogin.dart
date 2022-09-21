@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:demo_fire/Home_start/resetpasword.dart';
-import 'package:demo_fire/service/user_model.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'resetpasword.dart';
+import '../model/user_model.dart';
 
 class firstlogin extends StatefulWidget {
   TabController tabController;
@@ -32,7 +34,7 @@ class _firstloginState extends State<firstlogin> {
             ),
             Padding(
               padding: EdgeInsets.all(10),
-              child: TextField(
+              child: TextFormField(
                 controller: email,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -42,11 +44,11 @@ class _firstloginState extends State<firstlogin> {
             ),
             Padding(
               padding: EdgeInsets.all(10),
-              child: TextField(
+              child: TextFormField(
                 controller: password,
                 obscureText: staus,
                 decoration: InputDecoration(
-                    suffix: IconButton(
+                    suffixIcon: IconButton(
                       icon: Icon(
                         staus ? Icons.visibility_off : Icons.visibility,
                       ),
@@ -55,6 +57,7 @@ class _firstloginState extends State<firstlogin> {
                           staus = !staus;
                         });
                       },
+                      color: Colors.black,
                     ),
                     border: OutlineInputBorder(),
                     labelText: 'password',
@@ -76,6 +79,22 @@ class _firstloginState extends State<firstlogin> {
             ),
             ElevatedButton(
               onPressed: () async {
+                bool emailvalidate = RegExp(
+                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                    .hasMatch(email.text);
+
+                if (emailvalidate == false) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      duration: Duration(seconds: 3),
+                      content: const Text(
+                        'Your Email are not validate',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  );
+                }
+
                 try {
                   final credential = await FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
@@ -87,6 +106,7 @@ class _firstloginState extends State<firstlogin> {
                   UserModel userModel = UserModel(
                     email: email.text,
                     phone: password.text,
+                    uId: credential.user!.uid,
                   );
                   createUsedata(userModel);
                   widget.tabController.animateTo(1);
@@ -103,10 +123,6 @@ class _firstloginState extends State<firstlogin> {
                           'weak-password',
                           style: TextStyle(color: Colors.red),
                         ),
-                        action: SnackBarAction(
-                          label: 'Action',
-                          onPressed: () {},
-                        ),
                       ),
                     );
                   } else if (e.code == 'email-already-in-use') {
@@ -115,22 +131,22 @@ class _firstloginState extends State<firstlogin> {
                     try {
                       final credential = await FirebaseAuth.instance
                           .signInWithEmailAndPassword(
-                              email: email.text, password: password.text)
-                          .then((value) async {
-                        widget.tabController.animateTo(1);
+                              email: email.text, password: password.text);
+                      widget.tabController.animateTo(1);
 
-                        UserModel userModel = UserModel(
-                          email: email.text,
-                          phone: password.text,
-                        );
-                        if (userModel.uId == null) {
-                          createUsedata(userModel);
-                        }
+                      UserModel userModel = UserModel(
+                        email: email.text,
+                        phone: password.text,
+                        uId: credential.user!.uid,
+                      );
 
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        await prefs.setString("login", "Yes");
-                      });
+                      if (userModel.uId == credential.user!.uid) {
+                        createUsedata(userModel);
+                      }
+
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      await prefs.setString("login", "Yes");
 
                       print(credential);
                     } on FirebaseAuthException catch (e) {
@@ -144,10 +160,6 @@ class _firstloginState extends State<firstlogin> {
                             content: const Text(
                               'wrong-password',
                               style: TextStyle(color: Colors.red),
-                            ),
-                            action: SnackBarAction(
-                              label: 'Action',
-                              onPressed: () {},
                             ),
                           ),
                         );
@@ -213,10 +225,9 @@ class _firstloginState extends State<firstlogin> {
   }
 
   Future createUsedata(UserModel userModel) async {
-    final firestore = FirebaseFirestore.instance.collection("user").doc();
+    final firestore =
+        FirebaseFirestore.instance.collection("user").doc(userModel.uId);
 
-    userModel.uId = firestore.id;
-    final json = userModel.toJson();
-    await firestore.set(json);
+    await firestore.set(userModel.toJson());
   }
 }
