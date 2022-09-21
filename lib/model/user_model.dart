@@ -23,7 +23,7 @@ class UserModel {
   String? email;
   String? userImg;
 
-  factory UserModel.fromJson(Map json) => UserModel(
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
     uId: json["uId"],
     name: json["name"],
     phone: json["phone"],

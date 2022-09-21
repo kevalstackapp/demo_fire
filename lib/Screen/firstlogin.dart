@@ -20,6 +20,7 @@ class firstlogin extends StatefulWidget {
 class _firstloginState extends State<firstlogin> {
   bool staus = false;
 
+  String admins = "User";
   TextEditingController password = TextEditingController();
   TextEditingController email = TextEditingController();
 
@@ -93,6 +94,8 @@ class _firstloginState extends State<firstlogin> {
                       ),
                     ),
                   );
+                } else {
+                  CircularProgressIndicator();
                 }
 
                 try {
@@ -107,9 +110,15 @@ class _firstloginState extends State<firstlogin> {
                     email: email.text,
                     phone: password.text,
                     uId: credential.user!.uid,
+                    name: admins
                   );
                   createUsedata(userModel);
-                  widget.tabController.animateTo(1);
+
+
+                    widget.tabController.animateTo(2);
+
+
+
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
                   await prefs.setString("login", "Yes");
@@ -132,17 +141,19 @@ class _firstloginState extends State<firstlogin> {
                       final credential = await FirebaseAuth.instance
                           .signInWithEmailAndPassword(
                               email: email.text, password: password.text);
-                      widget.tabController.animateTo(1);
 
                       UserModel userModel = UserModel(
                         email: email.text,
                         phone: password.text,
                         uId: credential.user!.uid,
+                        name: admins
                       );
 
                       if (userModel.uId == credential.user!.uid) {
                         createUsedata(userModel);
                       }
+
+                        widget.tabController.animateTo(2);
 
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
@@ -184,19 +195,55 @@ class _firstloginState extends State<firstlogin> {
                   UserCredential? logn = await signInWithGoogle();
                   if (logn.user != null) {
                     UserModel userModel = UserModel(
-                        uId: logn.user!.uid,
-                        name: logn.user!.displayName,
-                        email: logn.user!.email,
-                        phone: logn.user!.phoneNumber,
-                        userImg: logn.user!.photoURL);
+                      uId: logn.user!.uid,
+                      name: logn.user!.displayName,
+                      email: logn.user!.email,
+                      phone: logn.user!.phoneNumber,
+                      userImg: logn.user!.photoURL,
+                    );
                     createUse(userModel);
-                    widget.tabController.animateTo(1);
+                    widget.tabController.animateTo(2);
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     await prefs.setString("login", "Yes");
+                  } else {
+                    CircularProgressIndicator();
                   }
                 },
-                child: Text("Google to Login.."))
+                child: Text("Google to Login..")),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                  width: 50,
+                  child: Text("Admin"),
+                ),
+                Radio(
+                  value: "Admin",
+                  groupValue: admins,
+                  onChanged: (value) {
+                    setState(() {
+                      admins = value.toString();
+                    });
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                  width: 30,
+                  child: Text("User"),
+                ),
+                Radio(
+                  value: "User",
+                  groupValue: admins,
+                  onChanged: (value) {
+                    setState(() {
+                      admins = value.toString();
+                    });
+                  },
+                ),
+              ],
+            ),
           ],
         ),
       ),

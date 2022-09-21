@@ -3,7 +3,6 @@ import 'package:demo_fire/Screen/home_firstpage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../Screen/firstlogin.dart';
 
 class firstpage extends StatefulWidget {
@@ -49,29 +48,31 @@ class _firstpageState extends State<firstpage>
             bottom: PreferredSize(
               preferredSize: Size(50, 50),
               child: IgnorePointer(
-                ignoring: true,
+                ignoring: false,
                 child: TabBar(
                   controller: tabController,
                   tabs: [
                     Tab(
-                      child:  Row(
-                        children: [
-                          SizedBox(
-                            height: 20,
-                            width: 30,
-                            child: Icon(
-                              Icons.supervised_user_circle,
-                              color: Colors.white,
-                            ),
+                        child: Row(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                          width: 30,
+                          child: Icon(
+                            Icons.login,
+                            color: Colors.white,
                           ),
-                          SizedBox(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: SizedBox(
                               height: 20,
                               width: 40,
-                              child: Text("User's",
+                              child: Text("Login",
                                   style: TextStyle(color: Colors.white))),
-                        ],
-                      )
-                    ),
+                        ),
+                      ],
+                    )),
                     Tab(
                         child: Row(
                       children: [
@@ -83,11 +84,14 @@ class _firstpageState extends State<firstpage>
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(
-                            height: 20,
-                            width: 30,
-                            child: Text("User's",
-                                style: TextStyle(color: Colors.white))),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: SizedBox(
+                              height: 20,
+                              width: 50,
+                              child: Text("User's",
+                                  style: TextStyle(color: Colors.white))),
+                        ),
                       ],
                     )),
                     Tab(
@@ -101,11 +105,14 @@ class _firstpageState extends State<firstpage>
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(
-                            height: 20,
-                            width: 30,
-                            child: Text("User",
-                                style: TextStyle(color: Colors.white))),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: SizedBox(
+                              height: 20,
+                              width: 30,
+                              child: Text("User",
+                                  style: TextStyle(color: Colors.white))),
+                        ),
                       ],
                     )),
                   ],
@@ -119,7 +126,7 @@ class _firstpageState extends State<firstpage>
             children: [
               firstlogin(tabController),
               Userpage(tabController),
-              admin()
+              admin(tabController)
             ],
           ),
         ));
