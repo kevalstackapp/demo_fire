@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_fire/Home_start/resetpasword.dart';
-import 'package:demo_fire/service/userModelEmail.dart';
 import 'package:demo_fire/service/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,7 +34,6 @@ class _firstloginState extends State<firstlogin> {
               padding: EdgeInsets.all(10),
               child: TextField(
                 controller: email,
-                //obscureText: true,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
@@ -47,8 +44,18 @@ class _firstloginState extends State<firstlogin> {
               padding: EdgeInsets.all(10),
               child: TextField(
                 controller: password,
-                //obscureText: true,
+                obscureText: staus,
                 decoration: InputDecoration(
+                    suffix: IconButton(
+                      icon: Icon(
+                        staus ? Icons.visibility_off : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          staus = !staus;
+                        });
+                      },
+                    ),
                     border: OutlineInputBorder(),
                     labelText: 'password',
                     hintText: 'Enter your secure password'),
@@ -76,6 +83,16 @@ class _firstloginState extends State<firstlogin> {
                     password: password.text,
                   );
                   print(credential);
+
+                  UserModel userModel = UserModel(
+                    email: email.text,
+                    phone: password.text,
+                  );
+                  createUsedata(userModel);
+                  widget.tabController.animateTo(1);
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  await prefs.setString("login", "Yes");
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'weak-password') {
                     print('The password provided is too weak.');
@@ -101,6 +118,18 @@ class _firstloginState extends State<firstlogin> {
                               email: email.text, password: password.text)
                           .then((value) async {
                         widget.tabController.animateTo(1);
+
+                        UserModel userModel = UserModel(
+                          email: email.text,
+                          phone: password.text,
+                        );
+                        if (userModel.uId == null) {
+                          createUsedata(userModel);
+                        }
+
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        await prefs.setString("login", "Yes");
                       });
 
                       print(credential);
@@ -128,6 +157,9 @@ class _firstloginState extends State<firstlogin> {
                 } catch (e) {
                   print(e);
                 }
+                email.clear();
+                password.clear();
+                FocusManager.instance.primaryFocus?.unfocus();
               },
               child: Text(
                 "Login",
@@ -136,6 +168,7 @@ class _firstloginState extends State<firstlogin> {
             ),
             ElevatedButton(
                 onPressed: () async {
+                  FocusManager.instance.primaryFocus?.unfocus();
                   UserCredential? logn = await signInWithGoogle();
                   if (logn.user != null) {
                     UserModel userModel = UserModel(
@@ -159,19 +192,15 @@ class _firstloginState extends State<firstlogin> {
   }
 
   Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-    // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;
 
-    // Create a new credential
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
-    print(credential);
 
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
@@ -181,5 +210,13 @@ class _firstloginState extends State<firstlogin> {
         FirebaseFirestore.instance.collection("user").doc("${userModel.uId}");
 
     await firestore.set(userModel.toJson());
+  }
+
+  Future createUsedata(UserModel userModel) async {
+    final firestore = FirebaseFirestore.instance.collection("user").doc();
+
+    userModel.uId = firestore.id;
+    final json = userModel.toJson();
+    await firestore.set(json);
   }
 }

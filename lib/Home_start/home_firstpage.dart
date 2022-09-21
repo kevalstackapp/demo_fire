@@ -48,38 +48,38 @@ class _UserpageState extends State<Userpage> {
     );
   }
 
-  Widget buildUser(UserModel userModal) => InkWell(
-        child: ListTile(
-          title: Text(userModal.name!),
-          subtitle: Text(userModal.email!),
-          leading: Image.network("${userModal.userImg}"),
-          trailing: InkWell(
-            onTap: () {
-              showModalBottomSheet<void>(
-                  isDismissible: false,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                        child: new Wrap(children: <Widget>[
-                      new ListTile(
-                          leading: new Icon(Icons.delete),
-                          title: new Text('Delete'),
-                          onTap: () {
-                            final docuser = FirebaseFirestore.instance
-                                .collection('user')
-                                .doc(userModal.uId);
-                            docuser.delete();
-                          }
-                          // Remove the tapped document here - how?
-
-                          ),
-                    ]));
-                  });
-            },
-            child: Icon(
-              Icons.delete,
-              color: Colors.red,
-            ),
+  Widget buildUser(UserModel userModal) => ListTile(
+        // title: Text(userModal.name!),
+        title: Text(userModal.email!),
+        leading: userModal.userImg != null
+            ? Image.network("${userModal.userImg}")
+            : Icon(
+                Icons.manage_accounts_outlined,
+                size: 50,
+              ),
+        trailing: InkWell(
+          onTap: () {
+            showModalBottomSheet<void>(
+                isDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                      child: new Wrap(children: <Widget>[
+                    new ListTile(
+                        leading: new Icon(Icons.delete),
+                        title: new Text('Delete'),
+                        onTap: () {
+                          final docuser = FirebaseFirestore.instance
+                              .collection('user')
+                              .doc(userModal.uId);
+                          docuser.delete();
+                        }),
+                  ]));
+                });
+          },
+          child: Icon(
+            Icons.delete,
+            color: Colors.red,
           ),
         ),
       );
