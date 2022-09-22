@@ -38,6 +38,7 @@ dependencies:
   cloud_firestore: ^3.4.8
   shared_preferences: ^2.0.15
   lottie: ^1.4.3
+  google_fonts: ^3.0.1
 
 
 

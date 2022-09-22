@@ -2,6 +2,7 @@ import 'package:demo_fire/Screen/admin.dart';
 import 'package:demo_fire/Screen/home_firstpage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Screen/firstlogin.dart';
 
@@ -43,7 +44,9 @@ class _firstpageState extends State<firstpage>
             systemOverlayStyle: SystemUiOverlayStyle(
                 // Status bar color
                 statusBarColor: Colors.blue),
-            title: Text("Login"),
+            title: Text("Login",style: GoogleFonts.alice(
+                textStyle: TextStyle(color: Colors.white)
+            ),),
             centerTitle: true,
             bottom: PreferredSize(
               preferredSize: Size(50, 50),
@@ -69,7 +72,9 @@ class _firstpageState extends State<firstpage>
                               height: 20,
                               width: 40,
                               child: Text("Login",
-                                  style: TextStyle(color: Colors.white))),
+                                  style:GoogleFonts.alice(
+                                      textStyle: TextStyle(color: Colors.white)
+                                  ))),
                         ),
                       ],
                     )),
@@ -90,7 +95,9 @@ class _firstpageState extends State<firstpage>
                               height: 20,
                               width: 50,
                               child: Text("User's",
-                                  style: TextStyle(color: Colors.white))),
+                                  style: GoogleFonts.alice(
+                                      textStyle: TextStyle(color: Colors.white)
+                                  ))),
                         ),
                       ],
                     )),
@@ -111,7 +118,9 @@ class _firstpageState extends State<firstpage>
                               height: 20,
                               width: 30,
                               child: Text("User",
-                                  style: TextStyle(color: Colors.white))),
+                                  style:GoogleFonts.alice(
+                                      textStyle: TextStyle(color: Colors.white)
+                                  ),)),
                         ),
                       ],
                     )),

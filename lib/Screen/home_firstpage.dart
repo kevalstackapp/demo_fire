@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +24,8 @@ class _UserpageState extends State<Userpage> {
         stream: FirebaseFirestore.instance.collection("user").snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: Text('Somthing is Laoding'));
+            return Center(
+                child: Text('Somthing is Laoding', style: GoogleFonts.alice()));
           } else if (snapshot.hasData) {
             final user = snapshot.data!;
 
@@ -41,7 +43,8 @@ class _UserpageState extends State<Userpage> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                                title: Text("Delet Your Acount"),
+                                title: Text("Delete Your Acount",
+                                    style: GoogleFonts.alice()),
                                 actions: [
                                   TextButton(
                                       onPressed: () {
@@ -52,12 +55,14 @@ class _UserpageState extends State<Userpage> {
                                         docuser.delete();
                                         Navigator.pop(context);
                                       },
-                                      child: Text("Yes")),
+                                      child: Text("Yes",
+                                          style: GoogleFonts.alice())),
                                   TextButton(
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
-                                      child: Text("No")),
+                                      child: Text("No",
+                                          style: GoogleFonts.alice())),
                                 ]);
                           },
                         );
@@ -66,11 +71,11 @@ class _UserpageState extends State<Userpage> {
                   leading: userModel.userImg != null
                       ? Image.network("${userModel.userImg}")
                       : Icon(
-                          Icons.manage_accounts_outlined,
+                          Icons.account_box,
                           size: 50,
                         ),
                   title: (userModel.email.toString().isNotEmpty)
-                      ? Text("${userModel.email}")
+                      ? Text("${userModel.email}", style: GoogleFonts.alice())
                       : const Text("No Email"),
                 );
               },

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
 
@@ -34,8 +35,8 @@ class _firstloginState extends State<firstlogin> {
           children: [
             Container(
               height: 100,
-             width: 100,
-             child:  Lottie.asset("asset/107723-logindvdvd.json"),
+              width: 100,
+              child: Lottie.asset("asset/107723-logindvdvd.json", width: 200),
             ),
             Padding(
               padding: EdgeInsets.all(10),
@@ -84,7 +85,7 @@ class _firstloginState extends State<firstlogin> {
                 SizedBox(
                   height: 20,
                   width: 50,
-                  child: Text("Admin"),
+                  child: Text("Admin", style: GoogleFonts.alice()),
                 ),
                 Radio(
                   value: "User",
@@ -98,7 +99,10 @@ class _firstloginState extends State<firstlogin> {
                 SizedBox(
                   height: 20,
                   width: 30,
-                  child: Text("User"),
+                  child: Text(
+                    "User",
+                    style: GoogleFonts.alice(),
+                  ),
                 ),
               ],
             ),
@@ -112,7 +116,7 @@ class _firstloginState extends State<firstlogin> {
               },
               child: Text(
                 'Forget Password.',
-                style: TextStyle(fontSize: 15),
+                style: GoogleFonts.alice(textStyle: TextStyle(fontSize: 15)),
               ),
             ),
             ElevatedButton(
@@ -127,6 +131,16 @@ class _firstloginState extends State<firstlogin> {
                       duration: Duration(seconds: 3),
                       content: const Text(
                         'Your Email are not validate',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  );
+                } else if (password.text == "") {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      duration: Duration(seconds: 3),
+                      content: const Text(
+                        'Password not Enter',
                         style: TextStyle(color: Colors.red),
                       ),
                     ),
@@ -218,7 +232,7 @@ class _firstloginState extends State<firstlogin> {
               },
               child: Text(
                 "Login",
-                style: TextStyle(fontSize: 15),
+                style:GoogleFonts.alice(textStyle: TextStyle(fontSize: 15)),
               ),
             ),
             ElevatedButton(
@@ -257,7 +271,7 @@ class _firstloginState extends State<firstlogin> {
                       child: SizedBox(
                         height: 40,
                         width: 125,
-                        child: Text("Sign in with Google"),
+                        child: Text("Sign in with Google", style: GoogleFonts.alice()),
                       ),
                     )
                   ],
