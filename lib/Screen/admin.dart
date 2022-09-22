@@ -15,31 +15,49 @@ class admin extends StatefulWidget {
 }
 
 class _adminState extends State<admin> {
-
   bool staus = false;
   UserModel? userModel;
 
-
-  String auth  = FirebaseAuth.instance.currentUser!.uid;
-
+  String auth = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("user").doc(auth).snapshots(),
+      body: StreamBuilder(
+        stream:
+            FirebaseFirestore.instance.collection("user").doc(auth).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: Text('Somthing is Laoding'));
           } else if (snapshot.hasData) {
             final user = snapshot.data!;
-            UserModel userModel = UserModel.fromJson(
-                user.data() as Map<String, dynamic>);
-            return ListTile(
-              title: Text("${userModel.email}"),
+            UserModel userModel =
+                UserModel.fromJson(user.data() as Map<String, dynamic>);
+            return ListView(
+              children: [
+                ListTile(
+                  title: Text("${userModel.email}"),
+                ),
+                Container(
+                  height: 100,
+                  width: 100,
+                  child: (userModel.name == "Admin")
+                      ? Align(heightFactor: 50,
+                        widthFactor: 50,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              if (userModel.name == "Admin") {
+                                widget.tabController.animateTo(1);
+                              } else {
+                                widget.tabController.animateTo(2);
+                              }
+                            },
+                            child: Text("Admin")),
+                      )
+                      : Text("You Are not Admin"),
+                ),
+              ],
             );
-
-
           } else {
             return Center(
               child: CircularProgressIndicator(),
@@ -47,24 +65,6 @@ class _adminState extends State<admin> {
           }
         },
       ),
-      // (staus)
-      //     ? ListView(
-      //         children: [
-      //           ListTile(
-      //             title: Text("${user!.email}"),
-      //           ),
-      //           ElevatedButton(
-      //               onPressed: () {
-      //                 if () {
-      //                   widget.tabController.animateTo(1);
-      //                 } else {
-      //                   widget.tabController.animateTo(2);
-      //                 }
-      //               },
-      //               child: Text("Admin"))
-      //         ],
-      //       )
-      //     : Center(child: CircularProgressIndicator()),
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
             await GoogleSignIn().signOut();

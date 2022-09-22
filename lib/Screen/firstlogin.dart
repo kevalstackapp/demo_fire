@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lottie/lottie.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'resetpasword.dart';
@@ -18,7 +20,7 @@ class firstlogin extends StatefulWidget {
 }
 
 class _firstloginState extends State<firstlogin> {
-  bool staus = false;
+  bool staus = true;
 
   String admins = "User";
   TextEditingController password = TextEditingController();
@@ -30,8 +32,10 @@ class _firstloginState extends State<firstlogin> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 20,
+            Container(
+              height: 100,
+             width: 100,
+             child:  Lottie.asset("asset/107723-logindvdvd.json"),
             ),
             Padding(
               padding: EdgeInsets.all(10),
@@ -64,6 +68,39 @@ class _firstloginState extends State<firstlogin> {
                     labelText: 'password',
                     hintText: 'Enter your secure password'),
               ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Radio(
+                  value: "Admin",
+                  groupValue: admins,
+                  onChanged: (value) {
+                    setState(() {
+                      admins = value.toString();
+                    });
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                  width: 50,
+                  child: Text("Admin"),
+                ),
+                Radio(
+                  value: "User",
+                  groupValue: admins,
+                  onChanged: (value) {
+                    setState(() {
+                      admins = value.toString();
+                    });
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                  width: 30,
+                  child: Text("User"),
+                ),
+              ],
             ),
             TextButton(
               onPressed: () {
@@ -107,17 +144,13 @@ class _firstloginState extends State<firstlogin> {
                   print(credential);
 
                   UserModel userModel = UserModel(
-                    email: email.text,
-                    phone: password.text,
-                    uId: credential.user!.uid,
-                    name: admins
-                  );
+                      email: email.text,
+                      phone: password.text,
+                      uId: credential.user!.uid,
+                      name: admins);
                   createUsedata(userModel);
 
-
-                    widget.tabController.animateTo(2);
-
-
+                  widget.tabController.animateTo(2);
 
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
@@ -143,17 +176,16 @@ class _firstloginState extends State<firstlogin> {
                               email: email.text, password: password.text);
 
                       UserModel userModel = UserModel(
-                        email: email.text,
-                        phone: password.text,
-                        uId: credential.user!.uid,
-                        name: admins
-                      );
+                          email: email.text,
+                          phone: password.text,
+                          uId: credential.user!.uid,
+                          name: admins);
 
                       if (userModel.uId == credential.user!.uid) {
                         createUsedata(userModel);
                       }
 
-                        widget.tabController.animateTo(2);
+                      widget.tabController.animateTo(2);
 
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
@@ -210,40 +242,26 @@ class _firstloginState extends State<firstlogin> {
                     CircularProgressIndicator();
                   }
                 },
-                child: Text("Google to Login..")),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 20,
-                  width: 50,
-                  child: Text("Admin"),
-                ),
-                Radio(
-                  value: "Admin",
-                  groupValue: admins,
-                  onChanged: (value) {
-                    setState(() {
-                      admins = value.toString();
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 20,
-                  width: 30,
-                  child: Text("User"),
-                ),
-                Radio(
-                  value: "User",
-                  groupValue: admins,
-                  onChanged: (value) {
-                    setState(() {
-                      admins = value.toString();
-                    });
-                  },
-                ),
-              ],
-            ),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 7),
+                      child: SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Image.asset("asset/google (1).png"),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45, top: 17),
+                      child: SizedBox(
+                        height: 40,
+                        width: 125,
+                        child: Text("Sign in with Google"),
+                      ),
+                    )
+                  ],
+                )),
           ],
         ),
       ),
