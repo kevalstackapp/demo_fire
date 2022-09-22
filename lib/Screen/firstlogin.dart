@@ -159,9 +159,9 @@ class _firstloginState extends State<firstlogin> {
 
                   UserModel userModel = UserModel(
                       email: email.text,
-                      phone: password.text,
+                      password: password.text,
                       uId: credential.user!.uid,
-                      name: admins);
+                      admin: admins);
                   createUsedata(userModel);
 
                   widget.tabController.animateTo(2);
@@ -191,9 +191,9 @@ class _firstloginState extends State<firstlogin> {
 
                       UserModel userModel = UserModel(
                           email: email.text,
-                          phone: password.text,
+                          password: password.text,
                           uId: credential.user!.uid,
-                          name: admins);
+                          admin: admins);
 
                       if (userModel.uId == credential.user!.uid) {
                         createUsedata(userModel);
@@ -232,7 +232,7 @@ class _firstloginState extends State<firstlogin> {
               },
               child: Text(
                 "Login",
-                style:GoogleFonts.alice(textStyle: TextStyle(fontSize: 15)),
+                style: GoogleFonts.alice(textStyle: TextStyle(fontSize: 15)),
               ),
             ),
             ElevatedButton(
@@ -271,7 +271,8 @@ class _firstloginState extends State<firstlogin> {
                       child: SizedBox(
                         height: 40,
                         width: 125,
-                        child: Text("Sign in with Google", style: GoogleFonts.alice()),
+                        child: Text("Sign in with Google",
+                            style: GoogleFonts.alice()),
                       ),
                     )
                   ],

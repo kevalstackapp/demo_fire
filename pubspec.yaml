@@ -39,6 +39,11 @@ dependencies:
   shared_preferences: ^2.0.15
   lottie: ^1.4.3
   google_fonts: ^3.0.1
+  image_picker: ^0.8.5+3
+  firebase_storage: ^10.3.8
+  permission_handler: ^10.0.1
+  path: ^1.8.0
+  percent_indicator: ^4.2.2
 
 
 
