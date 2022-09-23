@@ -1,23 +1,23 @@
-import 'package:demo_fire/Screen/admin.dart';
-import 'package:demo_fire/Screen/home_firstpage.dart';
+
+import 'package:demo_fire/common/method/shred_preferences.dart';
+import 'package:demo_fire/screen/admin/admin.dart';
+import 'package:demo_fire/screen/viewdata/home_firstpage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../Screen/firstlogin.dart';
 
-class firstpage extends StatefulWidget {
-  const firstpage({Key? key}) : super(key: key);
+import '../firstlogin/firstlogin.dart';
+
+class TabbarPage extends StatefulWidget {
+  const TabbarPage({Key? key}) : super(key: key);
 
   @override
-  State<firstpage> createState() => _firstpageState();
+  State<TabbarPage> createState() => _TabbarPageState();
 }
 
-class _firstpageState extends State<firstpage>
+class _TabbarPageState extends State<TabbarPage>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
-
-  var islogin;
 
   @override
   void initState() {
@@ -27,8 +27,7 @@ class _firstpageState extends State<firstpage>
   }
 
   Future shred() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey("login")) {
+    if (await chekPrefKey("Login")) {
       tabController.animateTo(2);
     } else {
       tabController.animateTo(0);
@@ -42,7 +41,6 @@ class _firstpageState extends State<firstpage>
         child: Scaffold(
           appBar: AppBar(
             systemOverlayStyle: SystemUiOverlayStyle(
-                // Status bar color
                 statusBarColor: Colors.blue),
             title: Text(
               "Login",
@@ -137,8 +135,7 @@ class _firstpageState extends State<firstpage>
             controller: tabController,
             children: [
               firstlogin(tabController),
-              Userpage(tabController),
-              admin(tabController)
+              Userpage(tabController), admin(tabController)
             ],
           ),
         ));

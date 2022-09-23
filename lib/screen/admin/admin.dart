@@ -1,16 +1,12 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_fire/model/user_model.dart';
+import 'package:demo_fire/screen/admin/admin_view_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 
 class admin extends StatefulWidget {
   TabController tabController;
@@ -24,11 +20,10 @@ class admin extends StatefulWidget {
 class _adminState extends State<admin> {
   String auth = FirebaseAuth.instance.currentUser!.uid;
   bool stsus = false;
-
   TextEditingController email = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
+  final ImagePicker picker = ImagePicker();
   String? immurl;
 
   @override
@@ -53,83 +48,45 @@ class _adminState extends State<admin> {
                     return SingleChildScrollView(
                       child: Column(children: [
                         IconButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                      title: Text("Delete Your Acount",
-                                          style: GoogleFonts.alice()),
-                                      actions: [
-                                        IconButton(
-                                          onPressed: () async {
-                                            final XFile? photo =
-                                                await _picker.pickImage(
-                                                    source: ImageSource.camera);
-                                            var file = File(photo!.path);
-
-                                            if (photo != null) {
-                                              var snapshot =
-                                                  await FirebaseStorage.instance
-                                                      .ref()
-                                                      .child(
-                                                          'images/${photo.name}')
-                                                      .putFile(file);
-                                              print("ok");
-                                              var downloadUrl = await snapshot
-                                                  .ref
-                                                  .getDownloadURL();
-                                              setState(() {
-                                                immurl = downloadUrl;
-                                              });
-                                              if (downloadUrl == null) {
-                                                CircularProgressIndicator();
-                                              }
-                                            }
-                                            Navigator.pop(context);
-                                          },
-                                          icon: Icon(Icons.camera),
-                                          iconSize: 40,
-                                        ),
-                                        IconButton(
-                                          onPressed: () async {
-                                            final XFile? photo =
-                                                await _picker.pickImage(
-                                                    source:
-                                                        ImageSource.gallery);
-                                            var file = File(photo!.path);
-
-                                            if (photo != null) {
-                                              var snapshot =
-                                                  await FirebaseStorage.instance
-                                                      .ref()
-                                                      .child(
-                                                          'images/${photo.name}')
-                                                      .putFile(file);
-                                              print("ok");
-                                              var downloadUrl = await snapshot
-                                                  .ref
-                                                  .getDownloadURL();
-                                              setState(() {
-                                                immurl = downloadUrl;
-                                              });
-                                              if (downloadUrl == null) {
-                                                CircularProgressIndicator();
-                                              }
-                                            }
-                                            Navigator.pop(context);
-                                          },
-                                          icon: Icon(Icons.photo_album),
-                                          iconSize: 40,
-                                        ),
-                                      ]);
-                                },
-                              );
-                            },
-                            icon: Icon(
-                              Icons.image,
-                              size: 50,
-                            )),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                    title: Text("Choose your imgage",
+                                        style: GoogleFonts.alice()),
+                                    actions: [
+                                      IconButton(
+                                        onPressed: () async {
+                                          AdminViewModel().UserCamaraImgMethod(
+                                              context, picker, immurl!);
+                                        },
+                                        icon: Icon(Icons.camera),
+                                        iconSize: 40,
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          AdminViewModel().UserGallryImgMethod(
+                                              context, picker, immurl!);
+                                        },
+                                        icon: Icon(Icons.photo_album),
+                                        iconSize: 40,
+                                      ),
+                                    ]);
+                              },
+                            );
+                          },
+                          icon: immurl != null
+                              ? Container(
+                                  height: 100,
+                                  child: Image.network(
+                                    "${immurl}",
+                                  ))
+                              : Image.asset(
+                                  "asset/download.png",
+                                  height: 100,
+                                ),
+                        ),
                         Padding(
                           padding: EdgeInsets.all(10),
                           child: TextFormField(
@@ -162,28 +119,14 @@ class _adminState extends State<admin> {
                           ),
                         ),
                         Center(
-                          child:immurl == null? ElevatedButton(
-                              onPressed: () async {
-                                setState(() {
+                            child: ElevatedButton(
+                                onPressed: () async {
                                   stsus = false;
-                                });
-                                FirebaseFirestore.instance
-                                    .collection("user")
-                                    .doc(auth)
-                                    .update({
-                                  'name': name.text,
-                                  'phone': phone.text,
-                                  'userImg': immurl
-                                });
-                              },
-                              child: Text("Update")):CircularPercentIndicator(
-                            radius: 60.0,
-                            lineWidth: 5.0,
-                            percent: 1.0,
-                            center: new Text("100%"),
-                            progressColor: Colors.green,
-                          ),
-                        )
+                                  setState(() {});
+                                  AdminViewModel().UserUpdateMethod(context,
+                                      name.text, phone.text, immurl!, auth);
+                                },
+                                child: Text("Update")))
                       ]),
                     );
                   } else {
@@ -223,13 +166,17 @@ class _adminState extends State<admin> {
                         ),
                         ListTile(
                           leading: Text("Name:"),
-                          title: Text("${userModel.name}",
-                              style: GoogleFonts.alice()),
+                          title: (userModel.name != null)
+                              ? Text("${userModel.name}",
+                                  style: GoogleFonts.alice())
+                              : Text(""),
                         ),
                         ListTile(
                           leading: Text("Phone:"),
-                          title: Text("${userModel.phone}",
-                              style: GoogleFonts.alice()),
+                          title: (userModel.name != null)
+                              ? Text("${userModel.phone}",
+                                  style: GoogleFonts.alice())
+                              : Text(""),
                         ),
                         Container(
                           height: 20,
@@ -278,11 +225,7 @@ class _adminState extends State<admin> {
                         child: Icon(Icons.edit)),
                     FloatingActionButton(
                         onPressed: () async {
-                          await GoogleSignIn().signOut();
-                          widget.tabController.animateTo(0);
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          await prefs.clear();
+                          AdminViewModel().SignOutMethod(widget.tabController);
                         },
                         child: Icon(Icons.logout)),
                   ],
