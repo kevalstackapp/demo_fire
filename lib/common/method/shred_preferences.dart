@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ShredPreference {}
 
-log(String message) {
+logs(String message) {
   if (kDebugMode) {
     print(message);
   }

@@ -1,4 +1,4 @@
-
+import 'package:demo_fire/api_demo/first_screen/first_screen.dart';
 import 'package:demo_fire/common/method/shred_preferences.dart';
 import 'package:demo_fire/screen/admin/admin.dart';
 import 'package:demo_fire/screen/viewdata/home_firstpage.dart';
@@ -40,13 +40,21 @@ class _TabbarPageState extends State<TabbarPage>
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarColor: Colors.blue),
+            systemOverlayStyle:
+                SystemUiOverlayStyle(statusBarColor: Colors.blue),
             title: Text(
               "Login",
               style:
                   GoogleFonts.alice(textStyle: TextStyle(color: Colors.white)),
             ),
+            actions: [
+              IconButton(onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return FirstScrren();
+                },));
+
+              }, icon: Icon(Icons.videocam_outlined))
+            ],
             centerTitle: true,
             bottom: PreferredSize(
               preferredSize: Size(50, 50),
@@ -135,7 +143,8 @@ class _TabbarPageState extends State<TabbarPage>
             controller: tabController,
             children: [
               firstlogin(tabController),
-              Userpage(tabController), admin(tabController)
+              Userpage(tabController),
+              admin(tabController)
             ],
           ),
         ));

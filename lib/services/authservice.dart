@@ -64,7 +64,7 @@ class AuthService {
           UserModel currentUSerModel = userModelList.firstWhere(
                   (element) => element.uId == credential.user!.uid,
               orElse: () => UserModel());
-          log('createUsers --->  ${currentUSerModel.toJson()}');
+          logs('createUsers --->  ${currentUSerModel.toJson()}');
           if (currentUSerModel.uId == null || currentUSerModel.uId!.isEmpty) {
             createUsedata(userModel);
 
@@ -152,7 +152,7 @@ class AuthService {
           UserModel currentUSerModel = userModelList.firstWhere(
                   (element) => element.uId == credential.user!.uid,
               orElse: () => UserModel());
-          log('createUsers --->  ${currentUSerModel.toJson()}');
+          logs('createUsers --->  ${currentUSerModel.toJson()}');
           if (currentUSerModel.uId == null || currentUSerModel.uId!.isEmpty) {
             createUsedata(userModel);
 

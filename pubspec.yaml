@@ -44,6 +44,10 @@ dependencies:
   permission_handler: ^10.0.1
   path: ^1.8.0
   percent_indicator: ^4.2.2
+  carousel_slider: ^4.1.1
+  http: ^0.13.5
+  carousel_indicator: ^1.0.6
+  dio: ^4.0.6
 
 
 
