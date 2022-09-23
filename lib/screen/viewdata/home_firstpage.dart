@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_fire/common/method/shred_preferences.dart';
 import 'package:demo_fire/model/user_model.dart';
 import 'package:demo_fire/screen/viewdata/home_firstpage_view_model.dart';
 import 'package:flutter/material.dart';
@@ -45,8 +46,10 @@ class _UserpageState extends State<Userpage> {
                                 actions: [
                                   TextButton(
                                       onPressed: () {
+
                                         HomeFirstpageViewModel().UserDataDalete(
-                                            context, documentSnapshot.id);
+                                            context, documentSnapshot.id,widget.tabController);
+                                        Navigator.pop(context);
                                       },
                                       child: Text("Yes",
                                           style: GoogleFonts.alice())),

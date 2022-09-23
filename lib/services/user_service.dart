@@ -7,6 +7,9 @@ class UserService {
   final CollectionReference userCollection =
   FirebaseFirestore.instance.collection('users');
 
+
+
+
   Future<void> createUser(UserModel userModel) async {
     try {
       await userCollection.doc(userModel.uId).set(userModel.toJson());

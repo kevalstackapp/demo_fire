@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_fire/model/user_model.dart';
 import 'package:demo_fire/screen/admin/admin_view_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,7 +26,7 @@ class _adminState extends State<admin> {
   TextEditingController email = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
-  final ImagePicker picker = ImagePicker();
+   ImagePicker picker = ImagePicker();
   String? immurl;
 
   @override
@@ -45,7 +48,8 @@ class _adminState extends State<admin> {
                     UserModel userModel =
                         UserModel.fromJson(user.data() as Map<String, dynamic>);
 
-                    return SingleChildScrollView(
+                    return
+                      SingleChildScrollView(
                       child: Column(children: [
                         IconButton(
                           onPressed: () {
@@ -58,16 +62,53 @@ class _adminState extends State<admin> {
                                     actions: [
                                       IconButton(
                                         onPressed: () async {
-                                          AdminViewModel().UserCamaraImgMethod(
-                                              context, picker, immurl!);
+                                          final XFile? photo =
+                                              await picker.pickImage(
+                                                  source: ImageSource.camera);
+                                          var file = File(photo!.path);
+
+                                          if (photo != null) {
+                                            var snapshot = await FirebaseStorage
+                                                .instance
+                                                .ref()
+                                                .child('files/${photo.name}')
+                                                .putFile(file);
+                                            print("ok");
+                                            var downloadUrl = await snapshot.ref
+                                                .getDownloadURL();
+
+                                            setState(() {
+                                              immurl = downloadUrl;
+                                            });
+
+                                            Navigator.pop(context);
+                                          }
                                         },
                                         icon: Icon(Icons.camera),
                                         iconSize: 40,
                                       ),
                                       IconButton(
                                         onPressed: () async {
-                                          AdminViewModel().UserGallryImgMethod(
-                                              context, picker, immurl!);
+                                          final XFile? photo =
+                                              await picker.pickImage(
+                                                  source: ImageSource.gallery);
+                                          var file = File(photo!.path);
+
+                                          if (photo != null) {
+                                            var snapshot = await FirebaseStorage
+                                                .instance
+                                                .ref()
+                                                .child('files/${photo.name}')
+                                                .putFile(file);
+                                            print("ok");
+                                            var downloadUrl = await snapshot.ref
+                                                .getDownloadURL();
+
+                                            setState(() {
+                                              immurl = downloadUrl;
+                                            });
+                                            Navigator.pop(context);
+                                          }
                                         },
                                         icon: Icon(Icons.photo_album),
                                         iconSize: 40,
@@ -123,8 +164,14 @@ class _adminState extends State<admin> {
                                 onPressed: () async {
                                   stsus = false;
                                   setState(() {});
-                                  AdminViewModel().UserUpdateMethod(context,
-                                      name.text, phone.text, immurl!, auth);
+                                  FirebaseFirestore.instance
+                                      .collection("user")
+                                      .doc(auth)
+                                      .update({
+                                    'name': name.text,
+                                    'phone': phone.text,
+                                    'userImg': immurl
+                                  });
                                 },
                                 child: Text("Update")))
                       ]),

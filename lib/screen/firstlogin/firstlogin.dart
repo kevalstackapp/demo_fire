@@ -1,4 +1,5 @@
 import 'package:demo_fire/common/widget/snackbar_widget.dart';
+import 'package:demo_fire/screen/create_user_account/create_user_account.dart';
 import 'package:demo_fire/screen/firstlogin/fist_login_view_model.dart';
 import 'package:demo_fire/services/authservice.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class firstlogin extends StatefulWidget {
 
 class _firstloginState extends State<firstlogin> {
   bool staus = true;
-
+  bool accoutstatus = false;
   String admins = "User";
   TextEditingController password = TextEditingController();
   TextEditingController email = TextEditingController();
@@ -120,10 +121,8 @@ class _firstloginState extends State<firstlogin> {
                   AppSnackBar(context, text: "Email Not Validate");
                 } else if (emailvalidat(context, text: password.text) == "") {
                   AppSnackBar(context, text: "Password not Enter");
-                } else if (password.text.length <= 8) {
-                  AppSnackBar(context, text: "Your Password length not valid");
                 } else {
-                  CircularProgressIndicator();
+                  AppSnackBar(context, text: "wait");
                 }
 
                 AuthService().CreateEmailLogin(context, email.text,
@@ -165,6 +164,20 @@ class _firstloginState extends State<firstlogin> {
                     ],
                   ),
                 )),
+            TextButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return CreateUserAccount(widget.tabController);
+                  },
+                ));
+              },
+              child: Text(
+                'New User? Create Account',
+                style: GoogleFonts.alice(
+                    textStyle: TextStyle(fontSize: 15, color: Colors.black)),
+              ),
+            )
           ],
         ),
       ),

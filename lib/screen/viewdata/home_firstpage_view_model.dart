@@ -11,10 +11,11 @@ class HomeFirstpageViewModel {
     removePrefValue();
   }
 
-  void UserDataDalete(BuildContext context, String id) {
+  Future<void> UserDataDalete(BuildContext context, String id, TabController tabController) async {
     DocumentReference docuser =
         FirebaseFirestore.instance.collection('user').doc(id);
     docuser.delete();
-    Navigator.pop(context);
+    removePrefValue();
+    tabController.animateTo(0);
   }
 }
