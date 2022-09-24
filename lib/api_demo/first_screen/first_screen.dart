@@ -34,7 +34,7 @@ class _FirstScrrenState extends State<FirstScrren> {
     AudioLoadData();
   }
 
- void LoadData() async {
+  void LoadData() async {
     var url = Uri.parse('https://audio-kumbh.herokuapp.com/api/v1/banner');
     var response = await http.get(url);
     print('Response status: ${response.statusCode}');
@@ -47,7 +47,7 @@ class _FirstScrrenState extends State<FirstScrren> {
     l = jsonDecode(response.body);
   }
 
- void  CategoryLoadData() async {
+  void CategoryLoadData() async {
     var url = Uri.parse(
         'https://audio-kumbh.herokuapp.com/api/v2/category/audiobook');
     var response = await http.get(url, headers: {
@@ -65,14 +65,14 @@ class _FirstScrrenState extends State<FirstScrren> {
     });
   }
 
- void  AudioLoadData() async {
+  void AudioLoadData() async {
     var url =
         Uri.parse('https://audio-kumbh.herokuapp.com/api/v2/homepage/category');
     var response = await http.post(url, headers: {
       "x-guest-token":
           "U2FsdGVkX1+WVxNvXEwxTQsjLZAqcCKK9qqQQ5sUlx8aPkMZ/FyEyAleosfe07phhf0gFMgxsUh2uDnDSkhDaAfn1aw6jYHBwdZ43zdLiTcZedlS9zvVfxYG67fwnb4U454oAiMV0ImECW1DZg/w3aYZGXZIiQ+fiO4XNa1y1lc0rHvjKnPkgrYkgbTdOgAfnxnxaNHiniWClKWmVne/0vO0s6Vh7HpC0lRjs0LKTwM="
     }, body: {
-      "sectionfor": "audiobook"
+        "sectionfor": "audiobook"
     });
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -181,72 +181,77 @@ class _FirstScrrenState extends State<FirstScrren> {
                           );
                         },
                       )),
-                  SizedBox(
-                    height: 35,
-                    width: double.infinity,
-                    child: Text(
-                      "AudioBooks",
-                      style: GoogleFonts.alice(
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              color: Colors.brown,
-                              fontWeight: FontWeight.bold)),
+                  Padding(
+                    padding: const EdgeInsets.only(),
+                    child: SizedBox(
+                      height: 35,
+                      width: double.infinity,
+                      child: Text(
+                        "AudioBooks",
+                        style: GoogleFonts.alice(
+                            textStyle: TextStyle(
+                                fontSize: 30,
+                                color: Colors.brown,
+                                fontWeight: FontWeight.bold)),
+                      ),
                     ),
                   ),
                   Container(
                       height: 250,
                       width: double.infinity,
-                      child:
-                      ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: categoriesapi!
-                            .data!.homeCategoryList!.first.idList!.length,
-                        itemBuilder: (context, index) {
-                          HomeCategoryList a =
-                              categoriesapi!.data!.homeCategoryList!.first;
-                          return Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 170,
-                                  width: 120,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                            "${categoriesapi!.data!.homeCategoryList![0].idList![index].audioBookDpUrl}"),
+                      child: categoriesapi == null
+                          ? Center(child: CircularProgressIndicator())
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: categoriesapi!
+                                  .data!.homeCategoryList!.first.idList!.length,
+                              itemBuilder: (context, index) {
+                                HomeCategoryList a = categoriesapi!
+                                    .data!.homeCategoryList!.first;
+                                return Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        height: 178,
+                                        width: 120,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            image: DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(
+                                                  "${categoriesapi!.data!.homeCategoryList![0].idList![index].audioBookDpUrl}"),
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
                                       ),
-                                      borderRadius: BorderRadius.circular(10)),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 100,
-                                child: Text(
-                                  "${categoriesapi!.data!.homeCategoryList!.first.idList![index].name}",
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 100,
-                                child: Text(
-                                  "${categoriesapi!.data!.homeCategoryList!.first.idList![index].author}",
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      )),
+                                    ),
+                                    SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        "${categoriesapi!.data!.homeCategoryList!.first.idList![index].name}",
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        "${categoriesapi!.data!.homeCategoryList!.first.idList![index].author}",
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            )),
                 ],
               ),
             )
