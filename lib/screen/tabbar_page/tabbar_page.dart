@@ -59,7 +59,7 @@ class _TabbarPageState extends State<TabbarPage>
             bottom: PreferredSize(
               preferredSize: Size(50, 50),
               child: IgnorePointer(
-                ignoring: false,
+                ignoring: true,
                 child: TabBar(
                   controller: tabController,
                   tabs: [
