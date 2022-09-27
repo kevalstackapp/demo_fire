@@ -46,9 +46,10 @@ class _UserpageState extends State<Userpage> {
                                 actions: [
                                   TextButton(
                                       onPressed: () {
-
                                         HomeFirstpageViewModel().UserDataDalete(
-                                            context, documentSnapshot.id,widget.tabController);
+                                            context,
+                                            documentSnapshot.id,
+                                            widget.tabController);
                                         Navigator.pop(context);
                                       },
                                       child: Text("Yes",

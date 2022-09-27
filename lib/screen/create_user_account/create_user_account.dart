@@ -1,12 +1,5 @@
-import 'dart:io';
-import 'package:demo_fire/common/method/shred_preferences.dart';
-import 'package:demo_fire/model/user_model.dart';
-import 'package:demo_fire/screen/firstlogin/firstlogin.dart';
-import 'package:demo_fire/screen/firstlogin/fist_login_view_model.dart';
 import 'package:demo_fire/screen/tabbar_page/tabbar_page.dart';
 import 'package:demo_fire/services/authservice.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';

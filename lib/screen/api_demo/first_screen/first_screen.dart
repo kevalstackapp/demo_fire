@@ -72,7 +72,7 @@ class _FirstScrrenState extends State<FirstScrren> {
       "x-guest-token":
           "U2FsdGVkX1+WVxNvXEwxTQsjLZAqcCKK9qqQQ5sUlx8aPkMZ/FyEyAleosfe07phhf0gFMgxsUh2uDnDSkhDaAfn1aw6jYHBwdZ43zdLiTcZedlS9zvVfxYG67fwnb4U454oAiMV0ImECW1DZg/w3aYZGXZIiQ+fiO4XNa1y1lc0rHvjKnPkgrYkgbTdOgAfnxnxaNHiniWClKWmVne/0vO0s6Vh7HpC0lRjs0LKTwM="
     }, body: {
-        "sectionfor": "audiobook"
+      "sectionfor": "audiobook"
     });
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -134,22 +134,26 @@ class _FirstScrrenState extends State<FirstScrren> {
                       cornerRadius: 40,
                     ),
                   ),
-                  SizedBox(
-                    height: 35,
-                    width: double.infinity,
-                    child: Text(
-                      "Categories",
-                      style: GoogleFonts.alice(
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              color: Colors.brown,
-                              fontWeight: FontWeight.bold)),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: SizedBox(
+                      height: 35,
+                      width: double.infinity,
+                      child: Text(
+                        "Categories",
+                        style: GoogleFonts.alice(
+                            textStyle: const TextStyle(
+                                fontSize: 30,
+                                color: Colors.brown,
+                                fontWeight: FontWeight.bold)),
+                      ),
                     ),
                   ),
                   Container(
                       height: 150,
                       width: double.infinity,
                       child: ListView.builder(
+                        physics: BouncingScrollPhysics(),
                         scrollDirection: Axis.horizontal,
                         itemCount: a.length,
                         itemBuilder: (context, index) {
@@ -182,7 +186,7 @@ class _FirstScrrenState extends State<FirstScrren> {
                         },
                       )),
                   Padding(
-                    padding: const EdgeInsets.only(),
+                    padding: const EdgeInsets.only(left: 10),
                     child: SizedBox(
                       height: 35,
                       width: double.infinity,
@@ -196,18 +200,121 @@ class _FirstScrrenState extends State<FirstScrren> {
                       ),
                     ),
                   ),
+                  InkWell(
+                    onTap: () {},
+                    child: SizedBox(
+                      child: Row(children: [
+                        categoriesapi == null
+                            ? Center(child: CircularProgressIndicator())
+                            : Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text(
+                                    "${categoriesapi!.data!.homeCategoryList![0].id}",
+                                    style: TextStyle(
+                                        color: Colors.brown.withOpacity(0.6))),
+                              ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 210),
+                          child: Text("View All",
+                              style: TextStyle(
+                                  color: Colors.brown.withOpacity(0.6))),
+                        ),
+                      ]),
+                    ),
+                  ),
                   Container(
                       height: 250,
                       width: double.infinity,
                       child: categoriesapi == null
                           ? Center(child: CircularProgressIndicator())
                           : ListView.builder(
+                              physics: BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               itemCount: categoriesapi!
                                   .data!.homeCategoryList!.first.idList!.length,
                               itemBuilder: (context, index) {
-                                HomeCategoryList a = categoriesapi!
-                                    .data!.homeCategoryList!.first;
+                                HomeCategoryList a =
+                                    categoriesapi!.data!.homeCategoryList![0];
+                                return Column(
+                                  children: [
+                                    //0
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        height: 178,
+                                        width: 120,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            image: DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(
+                                                  "${a.idList![index].audioBookDpUrl}"),
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        "${a..idList![index].name}",
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Colors.brown),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        "${a.idList![index].author}",
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Colors.brown),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            )),
+                  InkWell(
+                    onTap: () {},
+                    child: SizedBox(
+                      child: Row(children: [
+                        categoriesapi == null
+                            ? Center(child: CircularProgressIndicator())
+                            : Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text(
+                                    "${categoriesapi!.data!.homeCategoryList![1].id}",
+                                    style: TextStyle(
+                                        color: Colors.brown.withOpacity(0.6))),
+                              ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 210),
+                          child: Text("View All",
+                              style: TextStyle(
+                                  color: Colors.brown.withOpacity(0.6))),
+                        ),
+                      ]),
+                    ),
+                  ),
+                  Container(
+                      height: 250,
+                      width: double.infinity,
+                      child: categoriesapi == null
+                          ? Center(child: CircularProgressIndicator())
+                          : ListView.builder(
+                              physics: BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: categoriesapi!
+                                  .data!.homeCategoryList![1].idList!.length,
+                              itemBuilder: (context, index) {
+                                HomeCategoryList a =
+                                    categoriesapi!.data!.homeCategoryList![1];
                                 return Column(
                                   children: [
                                     Padding(
@@ -220,7 +327,7 @@ class _FirstScrrenState extends State<FirstScrren> {
                                             image: DecorationImage(
                                               fit: BoxFit.fill,
                                               image: NetworkImage(
-                                                  "${categoriesapi!.data!.homeCategoryList![0].idList![index].audioBookDpUrl}"),
+                                                  "${a.idList![index].audioBookDpUrl}"),
                                             ),
                                             borderRadius:
                                                 BorderRadius.circular(10)),
@@ -229,29 +336,29 @@ class _FirstScrrenState extends State<FirstScrren> {
                                     SizedBox(
                                       width: 100,
                                       child: Text(
-                                        "${categoriesapi!.data!.homeCategoryList!.first.idList![index].name}",
+                                        "${a.idList![index].name}",
                                         maxLines: 1,
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Colors.brown),
                                       ),
                                     ),
                                     SizedBox(
                                       width: 100,
                                       child: Text(
-                                        "${categoriesapi!.data!.homeCategoryList!.first.idList![index].author}",
+                                        "${a.idList![index].author}",
                                         maxLines: 1,
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                            fontWeight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Colors.brown),
                                       ),
                                     ),
                                   ],
                                 );
                               },
-                            )),
+                            ))
                 ],
               ),
             )

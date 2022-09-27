@@ -1,6 +1,6 @@
-import 'package:demo_fire/api_demo/first_screen/first_screen.dart';
 import 'package:demo_fire/common/method/shred_preferences.dart';
 import 'package:demo_fire/screen/admin/admin.dart';
+import 'package:demo_fire/screen/api_demo/first_screen/first_screen.dart';
 import 'package:demo_fire/screen/viewdata/home_firstpage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,12 +48,15 @@ class _TabbarPageState extends State<TabbarPage>
                   GoogleFonts.alice(textStyle: TextStyle(color: Colors.white)),
             ),
             actions: [
-              IconButton(onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return FirstScrren();
-                },));
-
-              }, icon: Icon(Icons.videocam_outlined))
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return FirstScrren();
+                      },
+                    ));
+                  },
+                  icon: Icon(Icons.videocam_outlined))
             ],
             centerTitle: true,
             bottom: PreferredSize(

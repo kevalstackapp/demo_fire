@@ -15,7 +15,7 @@ class HomeFirstpageViewModel {
     DocumentReference docuser =
         FirebaseFirestore.instance.collection('user').doc(id);
     docuser.delete();
-    removePrefValue();
-    tabController.animateTo(0);
+
+
   }
 }
